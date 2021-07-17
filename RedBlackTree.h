@@ -26,3 +26,39 @@ public:
 		isBlack = false;
 	}
 }
+
+template<typename T>
+class RedBlackTree<T>
+{
+private:
+	NodeT	*root;
+
+public:
+	RedBlackTree();
+
+	RedBlackTree(RedBlackTree<T> &src);
+
+	RedBlackTree operator=(RedBlackTree<T> &src);
+
+	~RedBlackTree();
+
+	bool insert(T data);
+
+	bool remove(T data);
+
+	bool search(T data);
+
+	vector<T> search(T data1, T data2);
+
+	T closestLess(T data);
+
+	T closestGreater(T data);
+
+	vector<T> values();
+
+	int size();
+
+	template <class Tjwme>
+	friend NodeT<Tjwme>* JWMEgetRoot(const RedBlackTree<Tjwme> & rbt);
+
+}
