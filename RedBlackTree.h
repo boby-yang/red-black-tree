@@ -464,13 +464,27 @@ NodeT<T>* RedBlackTree<T>::leftRotate(NodeT<T> *x)
  * node will be returned
  */
 template<typename T>
-NodeT<T>* RedBlackTree<T>::bstInsert(T data)
+NodeT<T>* RedBlackTree<T>::bstInsert(NodeT<T> *root, NodeT<T> *in)
 {
 	// TODO: need to be implemented
-
-
-
-	return nullptr;
+	/* If the tree is empty, return a new node */
+    if (root == nullptr)
+       return in;
+  
+    /* Otherwise, recur down the tree */
+    if (in->data < root->data)
+    {
+        root->left  = BSTInsert(root->left, in);
+        root->left->parent = root;
+    }
+    else if (in->data > root->data)
+    {
+        root->right = BSTInsert(root->right, in);
+        root->right->parent = root;
+    }
+  
+    /* return the (unchanged) node pointer */
+    return root;
 }
 
 
