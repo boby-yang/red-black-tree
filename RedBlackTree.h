@@ -1,7 +1,6 @@
 #include <vector>
 using namespace std;
 
-/////// Part 1: NodeT Class ///////
 template<typename T>
 class NodeT
 {
@@ -47,67 +46,7 @@ public:
 
 };
 
-/////// Part 2: Helper Methods ///////
-/*
- * Param: pointer to NodeT to be copied
- * Post: all NodeT in target will be deep copied,
- * and the copied root will be returned 
- */
-template<typename T>
-NodeT<T> *copyNodeT(NodeT<T> *target)
-{
-	if (target == nullptr)
-	{
-		return nullptr;
-	}
-	NodeT<T> *out = new NodeT<T>(target->data);
-	out->isBlack = target->isBlack; 
-	NodeT<T> *newLeft = nullptr;
-	NodeT<T> *newRight = nullptr;
-	if (target->left != nullptr)
-	{
-		newLeft = copyNode(target->left);
-		newLeft->parent = out;
-	}
-	if (target->right != nullptr)
-	{
-		newRight = copyNode(target->right);
-		newRight->parent = out;
-	}
-	return out;
-};
 
-/* 
- * Inorder traversal of the node
- * Param: none
- * Post: returns vector containing all template type
- * values in the tree in ascending order
- */
-template<typename T>
-vector<T> inOrderTraversal(NodeT<T>  *root)
-{
-	vector<T> out;
-	vector<T> leftVec, rightVec;
-
-	if (root == nullptr)
-	{
-		return out;
-	}
-	if (root->left != nullptr)
-	{
-		leftVec = inOrderTraversal(root->left);
-	}		
-	if (root->right != nullptr)
-	{
-		rightVec = inOrderTraversal(root->right);
-	}
-	out.insert(out.end(), leftVec.begin(), leftVec.end());
-	out.push_back(root->data);
-	out.insert(out.end(), rightVec.begin(), rightVec.end());
-	return out;
-};
-
-/////// Part 3: RedBlackTree Class ///////
 template<typename T>
 class RedBlackTree
 {
@@ -116,32 +55,24 @@ private:
 
 public:
 	RedBlackTree();
-
 	RedBlackTree(RedBlackTree<T> &src);
-
 	RedBlackTree operator=(RedBlackTree<T> &src);
-
 	~RedBlackTree();
-
 	bool insert(T data);
-
 	bool remove(T data);
-
 	bool search(T data);
-
 	vector<T> search(T data1, T data2);
-
 	T closestLess(T data);
-
 	T closestGreater(T data);
-
 	vector<T> values();
-
 	int size();
 
 	template <class Tjwme>
 	friend NodeT<Tjwme>* JWMEgetRoot(const RedBlackTree<Tjwme> & rbt);
 
+private:
+	NodeT<T> *copyNodeT(NodeT<T> *target);
+	vector<T> inOrderTraversal(NodeT<T>  *root);
 };
 
 /*
@@ -357,3 +288,63 @@ int RedBlackTree<T>::size()
 	return inOrderTraversal(this->root).size();
 }
 
+///// Helper Functions /////
+
+/*
+ * Param: pointer to NodeT to be copied
+ * Post: all NodeT in target will be deep copied,
+ * and the copied root will be returned 
+ */
+template<typename T>
+NodeT<T>* RedBlackTree<T>::copyNodeT(NodeT<T> *target)
+{
+	if (target == nullptr)
+	{
+		return nullptr;
+	}
+	NodeT<T> *out = new NodeT<T>(target->data);
+	out->isBlack = target->isBlack; 
+	NodeT<T> *newLeft = nullptr;
+	NodeT<T> *newRight = nullptr;
+	if (target->left != nullptr)
+	{
+		newLeft = copyNode(target->left);
+		newLeft->parent = out;
+	}
+	if (target->right != nullptr)
+	{
+		newRight = copyNode(target->right);
+		newRight->parent = out;
+	}
+	return out;
+};
+
+/* 
+ * Inorder traversal of the node
+ * Param: none
+ * Post: returns vector containing all template type
+ * values in the tree in ascending order
+ */
+template<typename T>
+vector<T> RedBlackTree<T>::inOrderTraversal(NodeT<T>  *root)
+{
+	vector<T> out;
+	vector<T> leftVec, rightVec;
+
+	if (root == nullptr)
+	{
+		return out;
+	}
+	if (root->left != nullptr)
+	{
+		leftVec = inOrderTraversal(root->left);
+	}		
+	if (root->right != nullptr)
+	{
+		rightVec = inOrderTraversal(root->right);
+	}
+	out.insert(out.end(), leftVec.begin(), leftVec.end());
+	out.push_back(root->data);
+	out.insert(out.end(), rightVec.begin(), rightVec.end());
+	return out;
+};
