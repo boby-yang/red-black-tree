@@ -51,12 +51,13 @@ template<typename T>
 class RedBlackTree
 {
 private:
-	NodeT<T>	*root;
+	NodeT<T> *root;
+	int tree_size;
 
 public:
 	RedBlackTree();
-	RedBlackTree(RedBlackTree<T> &src);
-	RedBlackTree operator=(RedBlackTree<T> &src);
+	RedBlackTree(const RedBlackTree<T> &src);
+	RedBlackTree operator=(const RedBlackTree<T> &src);
 	~RedBlackTree();
 	bool insert(T data);
 	bool remove(T data);
@@ -71,8 +72,12 @@ public:
 	friend NodeT<Tjwme>* JWMEgetRoot(const RedBlackTree<Tjwme> & rbt);
 
 private:
-	NodeT<T> *copyNodeT(NodeT<T> *target);
-	vector<T> inOrderTraversal(NodeT<T>  *root);
+	NodeT<T> *copyNodeT(const NodeT<T> *target);
+	vector<T> inOrderTraversal(const NodeT<T> *root);
+	NodeT<T> *bstInsert(T data);
+	// RbFix
+	NodeT<T> *rightRotate(NodeT<T> *root);
+	NodeT<T> *leftRotate(NodeT<T> *root);
 };
 
 /*
@@ -84,8 +89,8 @@ template<typename T>
 RedBlackTree<T>::RedBlackTree()
 {
 	root = nullptr;
+	tree_size = 0;
 }
-
 
 /*
  * Copy constructor of the RedBlackTree
@@ -94,11 +99,11 @@ RedBlackTree<T>::RedBlackTree()
  * copied; root pointer will also be set accordingly
  */
 template<typename T>
-RedBlackTree<T>::RedBlackTree(RedBlackTree<T> &src)
+RedBlackTree<T>::RedBlackTree(const RedBlackTree<T> &src)
 {
-	root = copyNode(src->root);
+	tree_size = src.tree_size;
+	root = copyNode(src.root);
 }
-
 
 /*
  * Destructor of the RedBlackTree
@@ -106,15 +111,16 @@ RedBlackTree<T>::RedBlackTree(RedBlackTree<T> &src)
  * Post: all NodeT will be deleted in order
  */
 template<typename T>
-RedBlackTree<T> RedBlackTree<T>::operator=(RedBlackTree<T> &src)
+RedBlackTree<T> RedBlackTree<T>::operator=(const RedBlackTree<T> &src)
 {
-	if (&src != this)
+	if (&src != (const RedBlackTree<T> *)this)
 	{
 		if (root != nullptr)
 		{
 			delete *root;
 		}
-		root = copyNode(src->root);
+		root = copyNode(src.root);
+		tree_size = src.tree_size;
 	}
 	return *this;
 }
@@ -140,10 +146,18 @@ RedBlackTree<T>::~RedBlackTree()
  * Param: template type parameter to add
  * Post: returns false if node containing data exists;
  * otherwise return true and add new NodeT to the tree
+ * and update tree_size
  */
 template<typename T>
 bool RedBlackTree<T>::insert(T data)
 {
+	// TODO: fill in function (see slide)
+
+	// BST insertion
+	// (need ptr to inserted node for next steps)
+	// Check violation
+	// Try changing color
+	// Rotate
 	return false;
 }
 
@@ -152,11 +166,18 @@ bool RedBlackTree<T>::insert(T data)
  * Pre: RedBlackTree obj need to be created
  * Param: template type parameter to remove
  * Post: returns true and remove node it node containing 
- * data exists; otherwise return false
+ * data exists and update tree_size; 
+ * otherwise return false
  */
 template<typename T>
 bool RedBlackTree<T>::remove(T data)
 {
+	// TODO: fill in function (see slide)
+
+	// Find node to delete
+	// (need ptr to node to remove for next steps)
+	// Remove node
+	// Different cases
 	return false;
 }
 
@@ -285,7 +306,7 @@ vector<T> RedBlackTree<T>::values()
 template<typename T>
 int RedBlackTree<T>::size()
 {
-	return inOrderTraversal(this->root).size();
+	return tree_size;
 }
 
 ///// Helper Functions /////
@@ -296,7 +317,7 @@ int RedBlackTree<T>::size()
  * and the copied root will be returned 
  */
 template<typename T>
-NodeT<T>* RedBlackTree<T>::copyNodeT(NodeT<T> *target)
+NodeT<T>* RedBlackTree<T>::copyNodeT(const NodeT<T> *target)
 {
 	if (target == nullptr)
 	{
@@ -326,7 +347,7 @@ NodeT<T>* RedBlackTree<T>::copyNodeT(NodeT<T> *target)
  * values in the tree in ascending order
  */
 template<typename T>
-vector<T> RedBlackTree<T>::inOrderTraversal(NodeT<T>  *root)
+vector<T> RedBlackTree<T>::inOrderTraversal(const NodeT<T> *root)
 {
 	vector<T> out;
 	vector<T> leftVec, rightVec;
@@ -348,3 +369,108 @@ vector<T> RedBlackTree<T>::inOrderTraversal(NodeT<T>  *root)
 	out.insert(out.end(), rightVec.begin(), rightVec.end());
 	return out;
 };
+
+/*
+ * Param: node in the tree to be right rotated
+ * Post: tree will be right rotated at root and 
+ * new root will be returned
+ */
+template<typename T>
+NodeT<T>* RedBlackTree<T>::rightRotate(NodeT<T> *x)
+{
+	// TODO: fill in right rotate function (see slide)
+	NodeT<T> *y = x->left;
+	if (y == nullptr)
+	{
+		return root; // cannot right rotate
+	}
+	x->left = y->right;
+	// See nodes' parent references
+	// y's right children
+	if (y->right != nullptr)
+	{
+		y->right->parent = x;
+	}
+	// y
+	y->parent = x->parent;
+
+	// Set child reference of x’s parent
+	if (x->parent == nullptr) // x was root
+	{
+		root = y;
+	}
+	else if (x == x->parent->left)
+	{
+		x->parent->left = y; // x is left children
+	}
+	else
+	{
+		x->parent->right = y; // x is right children
+	}
+	// make x y's right children
+	y->right = x;
+	x->parent = y;
+	return root;
+
+}
+
+/*
+ * Param: node in the tree to be left rotated
+ * Post: tree will be left rotated at x and 
+ * new root will be returned
+ */
+template<typename T>
+NodeT<T>* RedBlackTree<T>::leftRotate(NodeT<T> *x)
+{
+	// TODO: fill in left rotate function (see slide)
+	NodeT<T> *y = x->right;
+	if (y == nullptr)
+	{
+		return root; // cannot left rotate
+	}
+	x->right = y->left;
+	// See nodes' parent references
+	// y's left children
+	if (y->left != nullptr)
+	{
+		y->left->parent = x;
+	}
+	// y
+	y->parent = x->parent;
+
+	// Set child reference of x’s parent
+	if (x->parent == nullptr) // x was root
+	{
+		root = y;
+	}
+	else if (x == x->parent->left)
+	{
+		x->parent->left = y; // x is left children
+	}
+	else
+	{
+		x->parent->right = y; // x is right children
+	}
+	// make x y's left children
+	y->left = x;
+	x->parent = y;
+	return root;
+}
+
+/*
+ * Param: data to be inserted in the tree
+ * Post: new red node containing data will be inserted
+ * without violating BST policies and the inserted
+ * node will be returned
+ */
+template<typename T>
+NodeT<T>* RedBlackTree<T>::bstInsert(T data)
+{
+	// TODO: need to be implemented
+
+
+
+	return nullptr;
+}
+
+
