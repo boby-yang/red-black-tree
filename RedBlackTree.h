@@ -74,7 +74,7 @@ public:
 private:
 	NodeT<T> *copyNodeT(const NodeT<T> *target);
 	vector<T> inOrderTraversal(const NodeT<T> *root);
-	NodeT<T> *bstInsert(T data);
+	NodeT<T>* bstInsert(NodeT<T> *root, NodeT<T> *in);
 	// RbFix
 	NodeT<T> *rightRotate(NodeT<T> *root);
 	NodeT<T> *leftRotate(NodeT<T> *root);
@@ -102,7 +102,7 @@ template<typename T>
 RedBlackTree<T>::RedBlackTree(const RedBlackTree<T> &src)
 {
 	tree_size = src.tree_size;
-	root = copyNode(src.root);
+	root = copyNodeT(src.root);
 }
 
 /*
@@ -119,7 +119,7 @@ RedBlackTree<T> RedBlackTree<T>::operator=(const RedBlackTree<T> &src)
 		{
 			delete *root;
 		}
-		root = copyNode(src.root);
+		root = copyNodeT(src.root);
 		tree_size = src.tree_size;
 	}
 	return *this;
@@ -151,14 +151,89 @@ RedBlackTree<T>::~RedBlackTree()
 template<typename T>
 bool RedBlackTree<T>::insert(T data)
 {
-	// TODO: fill in function (see slide)
-
+	// Check if data is in tree
+	if (search(data) == true)
+	{
+		return false;
+	}
 	// BST insertion
-	// (need ptr to inserted node for next steps)
-	// Check violation
-	// Try changing color
-	// Rotate
-	return false;
+	NodeT<T> *in = new NodeT<T>(data);
+	bstInsert(root, in);
+
+	// Fix violation
+	NodeT<T> *uncle = nullptr;
+	NodeT<T> *parent = nullptr;
+	NodeT<T> *grand_parent = nullptr;
+	while (in->parent != nullptr && in->isBlack == false && in->parent->isBlack == false)
+	{
+		parent = in->parent;
+		grand_parent = in->parent->parent;
+		// Parent is left children
+		if (parent == grand_parent->left)
+		{
+			uncle = grand_parent->right;
+			// Red uncle: Recolor to fix violation
+			if (uncle != nullptr && uncle->isBlack == false)
+			{
+				grand_parent->isBlack = false;
+                parent->isBlack = true;
+                uncle->isBlack = true;
+                in = grand_parent;
+			}
+			else
+			{
+				/* 
+				in is right child of its parent
+				Left-rotation required */
+                if (in == parent->right)
+                {
+                    in = leftRotate(parent);
+                    parent = in->left;
+                }
+                /* 
+				in is left child of its parent
+				Right-rotation required */
+                in = rightRotate(grand_parent);
+                in->isBlack = 1;
+                grand_parent->isBlack = 0;
+            }
+		}
+		// Parent is left children
+		else
+		{
+			uncle = grand_parent->left;
+  
+            // Red uncle: Recolor to fix violation
+            if ((uncle != nullptr) && (uncle->isBlack == false))
+            {
+                grand_parent->isBlack = false;
+                parent->isBlack = true;
+                uncle->isBlack = true;
+                in = grand_parent;
+            }
+            else
+            {
+            	/* 
+				in is left child of its parent
+				Right-rotation required */
+                if (in == parent->left)
+                {
+                    in = rightRotate(parent);
+                    parent = in->right;
+                }
+  
+				/* 
+				in is right child of its parent
+				Left-rotation required */
+                in = leftRotate(grand_parent);
+                in->isBlack = 1;
+                grand_parent->isBlack = 0;
+            }
+        }
+    }
+  
+	root->isBlack = true;
+	return true;
 }
 
 
@@ -257,9 +332,9 @@ T RedBlackTree<T>::closestLess(T data)
 
 	for (int i = 0; i < allVal.size(); ++i)
 	{
-		if (i - 1 >= 0 && allVal[i]->data > data)
+		if (i - 1 >= 0 && allVal[i] > data)
 		{
-			return allVal[i - 1]->data;
+			return allVal[i - 1];
 		}
 	}
 	return data;
@@ -278,9 +353,9 @@ T RedBlackTree<T>::closestGreater(T data)
 
 	for (int i = allVal.size() - 1; i >= 0; --i)
 	{
-		if (i + 1 < allVal.size() && allVal[i]->data < data)
+		if (i + 1 < allVal.size() && allVal[i] < data)
 		{
-			return allVal[i + 1]->data;
+			return allVal[i + 1];
 		}
 	}
 	return data;
@@ -329,12 +404,12 @@ NodeT<T>* RedBlackTree<T>::copyNodeT(const NodeT<T> *target)
 	NodeT<T> *newRight = nullptr;
 	if (target->left != nullptr)
 	{
-		newLeft = copyNode(target->left);
+		newLeft = copyNodeT(target->left);
 		newLeft->parent = out;
 	}
 	if (target->right != nullptr)
 	{
-		newRight = copyNode(target->right);
+		newRight = copyNodeT(target->right);
 		newRight->parent = out;
 	}
 	return out;
@@ -378,7 +453,6 @@ vector<T> RedBlackTree<T>::inOrderTraversal(const NodeT<T> *root)
 template<typename T>
 NodeT<T>* RedBlackTree<T>::rightRotate(NodeT<T> *x)
 {
-	// TODO: fill in right rotate function (see slide)
 	NodeT<T> *y = x->left;
 	if (y == nullptr)
 	{
@@ -422,7 +496,6 @@ NodeT<T>* RedBlackTree<T>::rightRotate(NodeT<T> *x)
 template<typename T>
 NodeT<T>* RedBlackTree<T>::leftRotate(NodeT<T> *x)
 {
-	// TODO: fill in left rotate function (see slide)
 	NodeT<T> *y = x->right;
 	if (y == nullptr)
 	{
@@ -466,7 +539,6 @@ NodeT<T>* RedBlackTree<T>::leftRotate(NodeT<T> *x)
 template<typename T>
 NodeT<T>* RedBlackTree<T>::bstInsert(NodeT<T> *root, NodeT<T> *in)
 {
-	// TODO: need to be implemented
 	/* If the tree is empty, return a new node */
     if (root == nullptr)
        return in;
@@ -474,12 +546,12 @@ NodeT<T>* RedBlackTree<T>::bstInsert(NodeT<T> *root, NodeT<T> *in)
     /* Otherwise, recur down the tree */
     if (in->data < root->data)
     {
-        root->left  = BSTInsert(root->left, in);
+        root->left  = bstInsert(root->left, in);
         root->left->parent = root;
     }
     else if (in->data > root->data)
     {
-        root->right = BSTInsert(root->right, in);
+        root->right = bstInsert(root->right, in);
         root->right->parent = root;
     }
   
