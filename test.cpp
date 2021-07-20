@@ -127,5 +127,6 @@ int main()
 	RedBlackTree<int> &rb_ref = rb1;
 	cout << "Print tree: " << endl;
 	levelOrderPrint(rb_ref);
+    statistics("test.txt");
 	return 0;
 }

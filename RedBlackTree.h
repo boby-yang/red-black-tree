@@ -1,4 +1,8 @@
 #include <vector>
+#include <iostream>
+#include <string>
+#include <fstream>
+
 using namespace std;
 
 template<typename T>
@@ -570,4 +574,31 @@ NodeT<T>* RedBlackTree<T>::bstInsert(NodeT<T> *root, NodeT<T> *in)
     return root;
 }
 
-
+void statistics(string filename)
+{
+	RedBlackTree<double> rbt;
+	double sum = 0.0;
+	double median, big, small;
+	ifstream fin(filename, ifstream::in);
+	if(fin.is_open())
+	{
+		double grade;
+		while(fin >> grade)
+		{
+			if (true == rbt.insert(grade))
+			{
+				sum += grade;
+			}
+		}
+	}
+	vector<double> v = rbt.values();
+	small = rbt.closestLess(42.0);
+	big = rbt.closestGreater(42.0);
+	median = (v[rbt.size() / 2] + v[rbt.size() / 2 + 1]) / 2;
+	median = (0 == rbt.size() % 2 ? median : v[rbt.size() / 2]);
+	cout << "# of values:  " << to_string(rbt.size()) << "\n";
+	cout << "average:      " << to_string(sum / rbt.size()) << "\n";;
+	cout << "median:       " << to_string(v[rbt.size() / 2]) << "\n";;
+	cout << "closest < 42: " << (small == 42.0 ? "None" : to_string(small)) << "\n";;
+	cout << "closest > 42: " << (small == 42.0 ? "None" : to_string(big)) << "\n";;
+}
