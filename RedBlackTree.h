@@ -51,10 +51,19 @@ template<typename T>
 class RedBlackTree
 {
 private:
-	NodeT<T> *root;
+	// NodeT<T> *root; // remember to change back to private
 	int tree_size;
 
 public:
+
+
+
+
+	NodeT<T> *root; // remember to change back to private
+
+
+
+
 	RedBlackTree();
 	RedBlackTree(const RedBlackTree<T> &src);
 	RedBlackTree operator=(const RedBlackTree<T> &src);
@@ -158,7 +167,7 @@ bool RedBlackTree<T>::insert(T data)
 	}
 	// BST insertion
 	NodeT<T> *in = new NodeT<T>(data);
-	bstInsert(root, in);
+	root = bstInsert(root, in);
 
 	// Fix violation
 	NodeT<T> *uncle = nullptr;
@@ -231,8 +240,8 @@ bool RedBlackTree<T>::insert(T data)
             }
         }
     }
-  
 	root->isBlack = true;
+	tree_size++;
 	return true;
 }
 
@@ -412,6 +421,8 @@ NodeT<T>* RedBlackTree<T>::copyNodeT(const NodeT<T> *target)
 		newRight = copyNodeT(target->right);
 		newRight->parent = out;
 	}
+	out->left = newLeft;
+	out->right = newRight;
 	return out;
 };
 
