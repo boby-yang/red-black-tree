@@ -345,7 +345,7 @@ T RedBlackTree<T>::closestLess(T data)
 
 	for (int i = 0; i < allVal.size(); ++i)
 	{
-		if (i - 1 >= 0 && allVal[i] > data)
+		if (i - 1 >= 0 && allVal[i] >= data)
 		{
 			return allVal[i - 1];
 		}
@@ -366,7 +366,7 @@ T RedBlackTree<T>::closestGreater(T data)
 
 	for (int i = allVal.size() - 1; i >= 0; --i)
 	{
-		if (i + 1 < allVal.size() && allVal[i] < data)
+		if (i + 1 < allVal.size() && allVal[i] <= data)
 		{
 			return allVal[i + 1];
 		}
