@@ -25,30 +25,32 @@ void levelOrderPrint(RedBlackTree<T> &tr)
 	queue<NodeT<T>*> q;
 	int next_layer_cnt, this_layer_cnt;
 
-	// if (tr.size() == 0)
-	// 	return ;
+	if (tr.size() == 0)
+		return ;
 	q.push(tr.root);
 	this_layer_cnt = 1;
 	next_layer_cnt = 0;
-	while (!q.empty())
+	while (this_layer_cnt > 0)
 	{
 		NodeT<T> *cur = q.front();
 		q.pop();
-		cout << to_string(cur->data);
-		if (cur->isBlack == true)
+
+		if (cur != nullptr)
+		{
+			cout << to_string(cur->data);
+			if (cur->isBlack == true)
 			 cout << " ";
-		else
+			else
 			 cout << "R ";
+		}
+		else
+			cout << "X ";
 		this_layer_cnt--;
-		if (cur->left != nullptr)
+		if (cur != nullptr)
 		{
 			q.push(cur->left);
-			next_layer_cnt++;
-		}
-		if (cur->right != nullptr)
-		{
 			q.push(cur->right);
-			next_layer_cnt++;
+			next_layer_cnt += 2;
 		}
 		if (this_layer_cnt == 0)
 		{
@@ -57,6 +59,32 @@ void levelOrderPrint(RedBlackTree<T> &tr)
 			next_layer_cnt = 0;
 		}
 	}
+}
+
+void testInsertLeftScewed()
+{
+	RedBlackTree<int> rb1;
+	RedBlackTree<int> &rb_ref = rb1;
+	
+	for (int i = 180; i >= 0; i -= 10)
+	{
+		rb1.insert(i);
+		levelOrderPrint(rb_ref);
+		cout << "\n\n";
+	}	
+}
+
+void testInsertRightScewed()
+{
+	RedBlackTree<int> rb1;
+	RedBlackTree<int> &rb_ref = rb1;
+	
+	for (int i = 180; i >= 0; i -= 10)
+	{
+		rb1.insert(i);
+		levelOrderPrint(rb_ref);
+		cout << "\n\n";
+	}	
 }
 
 void simpleTest()
@@ -87,7 +115,13 @@ void simpleTest()
 
 int main()
 {
-	simpleTest();
+	// simpleTest();
+    // statistics("test.txt");
+    cout << "Left scewed 180 --> 0" << endl;
+	testInsertLeftScewed();
+	cout << "Right scewed 0 --> 180" << endl;
+	testInsertRightScewed();
+
 	// NodeT<int> *fakeRoot = new NodeT<int>(5);
 	// NodeT<int> *fakeLeft = new NodeT<int>(3);
 	// NodeT<int> *fakeRight = new NodeT<int>(7);
@@ -99,34 +133,15 @@ int main()
 	// cout << "Print tree: " << endl;
 	// levelOrderPrint(rb_ref);
 
-	RedBlackTree<int> rb1;
-	rb1.insert(180);
-	rb1.insert(170);
-	rb1.insert(160);
-	rb1.insert(150);
-	rb1.insert(140);
-	rb1.insert(130);
-	rb1.insert(120);
-	rb1.insert(110);
-	rb1.insert(100);
-	rb1.insert(90);
-	rb1.insert(80);
-	rb1.insert(70);
-	rb1.insert(60);
-	rb1.insert(50);
-	rb1.insert(40);
-	rb1.insert(30);
-	rb1.insert(20);
-	rb1.insert(10);
+	
 	// rb1.insert(80);
 	// rb1.insert(10);
 	// rb1.insert(35);
 	// rb1.insert(45);
-	cout << "Tree size: " << to_string(rb1.size()) << endl;
+	// cout << "Tree size: " << to_string(rb1.size()) << endl;
 	
-	RedBlackTree<int> &rb_ref = rb1;
-	cout << "Print tree: " << endl;
-	levelOrderPrint(rb_ref);
-    statistics("test.txt");
+	// RedBlackTree<int> &rb_ref = rb1;
+	// cout << "Print tree: " << endl;
+	// levelOrderPrint(rb_ref);
 	return 0;
 }

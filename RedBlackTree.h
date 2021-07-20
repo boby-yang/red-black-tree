@@ -88,7 +88,9 @@ private:
 	NodeT<T> *copyNodeT(const NodeT<T> *target);
 	vector<T> inOrderTraversal(const NodeT<T> *root);
 	NodeT<T>* bstInsert(NodeT<T> *root, NodeT<T> *in);
-	// RbFix
+	NodeT<T>* bstReplace(NodeT<T> *target);
+	NodeT<T>* bstFind(T target);
+	void fixDoubleBlack(NodeT<T> *target);
 	NodeT<T> *rightRotate(NodeT<T> *root);
 	NodeT<T> *leftRotate(NodeT<T> *root);
 };
@@ -130,7 +132,7 @@ RedBlackTree<T> RedBlackTree<T>::operator=(const RedBlackTree<T> &src)
 	{
 		if (root != nullptr)
 		{
-			delete *root;
+			delete root;
 		}
 		root = copyNodeT(src.root);
 		tree_size = src.tree_size;
@@ -261,12 +263,93 @@ template<typename T>
 bool RedBlackTree<T>::remove(T data)
 {
 	// TODO: fill in function (see slide)
-
-	// Find node to delete
-	// (need ptr to node to remove for next steps)
-	// Remove node
-	// Different cases
-	return false;
+	// Check if data is in tree
+	NodeT<T> *t = bstFind(data);
+	if (t == nullptr)
+	{
+		return false;
+	}
+	// find node that will replace target
+	NodeT<T> *r = bstReplace(t);
+	NodeT<T> *p = t->parent;
+	NodeT<T> *s;
+	bool bothBlack = ((r == nullptr || r->isBlack == true) && (t->isBlack == true));
+	if (t == p->left)
+	{
+		s = p->right;
+	}
+	else
+	{
+		s = p->left;
+	}
+	if (r == nullptr)
+	{
+		/* Target is root */
+		if (t == root)
+		{
+			root = nullptr;
+		}
+		else
+		{
+			if (bothBlack)
+			{
+				fixDoubleBlack(t);
+			}
+			else
+			{
+				if (s != nullptr)
+				{
+					s->isBlack = false;
+				}
+			}
+			if (t == p->left) //
+			{
+				p->left = nullptr;
+			}
+			else
+			{
+				p->right = nullptr;	
+			}
+		}
+		free(t);
+		tree_size--;
+		return true;
+	}
+	if (t->left == nullptr || t->right == nullptr)
+	{
+		/* target has 1 child */
+		if (t == root)
+		{
+			t->data = r->data;
+			t->left = nullptr;
+			t->right = nullptr;
+			free(r);
+		}
+		else
+		{
+			/* detach target from tree and move r up */
+			if (t == p->left)
+			{
+				p->left = r;
+			}
+			else
+			{
+				p->right = r;
+			}
+			free(t);
+			r->parent = p;
+			if (bothBlack)
+			{
+				fixDoubleBlack(r);
+			}
+			else
+			{
+				r->isBlack = true;
+			}
+		}
+	}
+	tree_size--;
+	return true;
 }
 
 
@@ -546,17 +629,18 @@ NodeT<T>* RedBlackTree<T>::leftRotate(NodeT<T> *x)
 }
 
 /*
- * Param: data to be inserted in the tree
- * Post: new red node containing data will be inserted
- * without violating BST policies and the inserted
- * node will be returned
+ * Param: current root of the tree and node to be inserted
+ * Post: param node will be inserted
+ * without violating BST policies and return the new root
  */
 template<typename T>
 NodeT<T>* RedBlackTree<T>::bstInsert(NodeT<T> *root, NodeT<T> *in)
 {
 	/* If the tree is empty, return a new node */
     if (root == nullptr)
+    {
        return in;
+    }
   
     /* Otherwise, recur down the tree */
     if (in->data < root->data)
@@ -572,6 +656,164 @@ NodeT<T>* RedBlackTree<T>::bstInsert(NodeT<T> *root, NodeT<T> *in)
   
     /* return the (unchanged) node pointer */
     return root;
+}
+
+/*
+ * Param: node to be removed
+ * Post: return the node that will replace target after remove
+ */
+template<typename T>
+NodeT<T>* RedBlackTree<T>::bstReplace(NodeT<T> *target)
+{
+	if (target->left == nullptr && target->right == nullptr)
+	{
+		return nullptr;
+	}
+	else if (target->left != nullptr)
+	{
+		return target->left;
+	}
+	else if (target->right != nullptr)
+	{
+		return target->right;
+	}
+	else
+	{
+		/* node has two children */
+		NodeT<T> *tmp = target->right;
+    	while (tmp != nullptr && tmp->left != nullptr)
+    	{
+    		tmp = tmp->left;
+    	}
+    	return tmp;
+	}
+}
+
+/*
+ * Param: template type data we are finding in the tree
+ * Post: return the node contains the target data
+ * nullptr if not found
+ */
+template<typename T>
+NodeT<T>* RedBlackTree<T>::bstFind(T target)
+{
+	NodeT<T> *cur = root;
+
+	while (cur != nullptr)
+	{
+		if (cur->data > target)
+		{
+			cur = cur->left;
+		}
+		else if (cur->data < target)
+		{
+			cur = cur->right;
+		}
+		else
+		{
+			return cur;
+		}
+	}
+	return nullptr;
+}
+
+/*
+ * Param: node we are going to fix
+ * Post: fix double black case at target node
+ */
+template<typename T>
+void RedBlackTree<T>::fixDoubleBlack(NodeT<T> *t)
+{
+	if (t == root)
+	{
+		return ;
+	}
+	NodeT<T> *p = t->parent;
+	NodeT<T> *s;
+	if (t == p->left)
+	{
+		s = p->right;
+	}
+	else
+	{
+		s = p->left;
+	}
+	/* no sibling, push up double black */
+	if (s == nullptr)
+	{
+		fixDoubleBlack(p);
+	}
+	else
+	{
+		if (s->isBlack == false)
+		{
+			p->isBlack = false;
+			s->isBlack = true;
+			if (s == p->left)
+			{
+				rightRotate(p);
+			}
+			else
+			{
+				leftRotate(p);
+			}
+			fixDoubleBlack(t);
+		}
+		else
+		{
+			/* black sibling */
+			if ((s->left != nullptr && s->left->isBlack == false) ||
+				(s->right != nullptr && s->right->isBlack == false))
+			{
+				if (s->left != nullptr && s->left->isBlack == false)
+				{
+					if (s == p->left)
+					{
+						/* left left */
+						s->left->isBlack = s->isBlack;
+						s->isBlack = p->isBlack;
+						rightRotate(p);
+					}
+					else
+					{
+						/* right right */
+						s->left->isBlack = p->isBlack;
+						rightRotate(s);
+						leftRotate(p);
+					}
+				}
+				else
+				{
+					if (s == p->left)
+					{
+						s->right->isBlack = p->isBlack;
+						leftRotate(s);
+						rightRotate(p);
+					}
+					else
+					{
+						s->right->isBlack = s->isBlack;
+						s->isBlack = p->isBlack;
+						leftRotate(p);
+					}
+				}
+				p->isBlack = true;
+			}
+			else
+			{
+				/* 2 b children */
+				s->isBlack = false;
+				if (p->isBlack == true)
+				{
+					fixDoubleBlack(p);
+				}
+				else
+				{
+					p->isBlack = true;
+				}
+			}
+		}
+	}
 }
 
 void statistics(string filename)
