@@ -594,11 +594,11 @@ void statistics(string filename)
 	vector<double> v = rbt.values();
 	small = rbt.closestLess(42.0);
 	big = rbt.closestGreater(42.0);
-	median = (v[rbt.size() / 2] + v[rbt.size() / 2 + 1]) / 2;
-	median = (0 == rbt.size() % 2 ? median : v[rbt.size() / 2]);
+	median = (v[rbt.size() / 2] + v[rbt.size() / 2 - 1]) / 2.0;
+	median = (0 == (rbt.size() % 2) ? median : v[rbt.size() / 2]);
 	cout << "# of values:  " << to_string(rbt.size()) << "\n";
 	cout << "average:      " << to_string(sum / rbt.size()) << "\n";;
-	cout << "median:       " << to_string(v[rbt.size() / 2]) << "\n";;
+	cout << "median:       " << to_string(median) << "\n";;
 	cout << "closest < 42: " << (small == 42.0 ? "None" : to_string(small)) << "\n";;
 	cout << "closest > 42: " << (small == 42.0 ? "None" : to_string(big)) << "\n";;
 }
