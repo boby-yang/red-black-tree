@@ -203,11 +203,11 @@ bool RedBlackTree<T>::insert(T data)
 				in is left child of its parent
 				Right-rotation required */
                 in = rightRotate(grand_parent);
-                in->isBlack = 1;
-                grand_parent->isBlack = 0;
+                parent->isBlack = true;
+                grand_parent->isBlack = false;
             }
 		}
-		// Parent is left children
+		// Parent is right children
 		else
 		{
 			uncle = grand_parent->left;
@@ -235,8 +235,8 @@ bool RedBlackTree<T>::insert(T data)
 				in is right child of its parent
 				Left-rotation required */
                 in = leftRotate(grand_parent);
-                in->isBlack = 1;
-                grand_parent->isBlack = 0;
+                parent->isBlack = true;
+                grand_parent->isBlack = false;
             }
         }
     }

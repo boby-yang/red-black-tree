@@ -100,11 +100,24 @@ int main()
 	// levelOrderPrint(rb_ref);
 
 	RedBlackTree<int> rb1;
+	rb1.insert(180);
+	rb1.insert(170);
+	rb1.insert(160);
+	rb1.insert(150);
+	rb1.insert(140);
+	rb1.insert(130);
+	rb1.insert(120);
+	rb1.insert(110);
+	rb1.insert(100);
+	rb1.insert(90);
+	rb1.insert(80);
+	rb1.insert(70);
+	rb1.insert(60);
+	rb1.insert(50);
+	rb1.insert(40);
 	rb1.insert(30);
 	rb1.insert(20);
 	rb1.insert(10);
-	// rb1.insert(20);
-	// rb1.insert(50);
 	// rb1.insert(80);
 	// rb1.insert(10);
 	// rb1.insert(35);
