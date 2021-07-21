@@ -99,20 +99,41 @@ void simpleTest()
 	RedBlackTree<int> rb2(rb1);
 	cout << "Copy Tree size: " << to_string(rb2.size()) << endl;
 
+
 	RedBlackTree<int> &rb_ref = rb2;
+	cout << "Print copied tree: " << endl;
+	levelOrderPrint(rb_ref);
+
+	RedBlackTree<int> rb3 = rb1;
+	cout << "Copy Tree size: " << to_string(rb3.size()) << endl;
+	rb_ref = rb3;
 	cout << "Print copied tree: " << endl;
 	levelOrderPrint(rb_ref);
 
 	if (rb1.remove(13)) cout << "removed 13" << endl;
 	if (rb1.search(42)) cout << "found 42" << endl;
 
-	vector<int> v1 = rb1.search(50, 100); //should contain 71
-	vector<int> v2 = rb1.values(); //should contain {42,71}
+	vector<int> v1 = rb1.search(13, 70); //should contain 71
+	cout << "Search 13-70" << endl;
+	for (int i = 0; i < v1.size(); ++i)
+		cout << to_string(v1[i]) << " ";
+	cout << endl;
+
+	vector<int> v2 = rb1.search(100, 50); //should contain 71
+	cout << "Search 100-50" << endl;
+	for (int i = 0; i < v2.size(); ++i)
+		cout << to_string(v2[i]) << " ";
+	cout << endl;
+
+	vector<int> v3 = rb1.values(); //should contain {42,71}
+	for (int i = 0; i < v3.size(); ++i)
+		cout << to_string(v3[i]) << " ";
+	cout << endl;
 
 	cout << "closestLess(12) = " << rb1.closestLess(12) << endl;
 	cout << "closestGreater(91) = " << rb1.closestGreater(91) << endl;
 
-	cout << "size = " << rb1.size() << endl; //should be 2
+	// cout << "size = " << rb1.size() << endl; //should be 2
 }
 
 void testRemove()
@@ -136,11 +157,11 @@ void testRemove()
 
 int main()
 {
-    RedBlackTree<int> rbt;
-    rbt.insert(1);
-    levelOrderPrint(rbt);
-    rbt.remove(1);
-    levelOrderPrint(rbt);
+    // RedBlackTree<int> rbt;
+    // rbt.insert(1);
+    // levelOrderPrint(rbt);
+    // rbt.remove(1);
+    // levelOrderPrint(rbt);
 
 
 	// simpleTest();

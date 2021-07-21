@@ -60,9 +60,7 @@ private:
 
 public:
 
-	//-----------------------------------------------------
 	NodeT<T> *root; // remember this?
-    //-----------------------------------------------------
 
 
 
@@ -391,6 +389,10 @@ T RedBlackTree<T>::closestLess(T data)
 {
 	vector <T> allVal = inOrderTraversal(this->root);
 
+	if (tree_size == 0 || allVal[0] >= data)
+	{
+		return data;
+	}	
 	for (int i = 0; i < allVal.size(); ++i)
 	{
 		if (i - 1 >= 0 && allVal[i] >= data)
@@ -412,6 +414,10 @@ T RedBlackTree<T>::closestGreater(T data)
 {
 	vector <T> allVal = inOrderTraversal(this->root);
 
+	if (tree_size == 0 || allVal[tree_size - 1] <= data)
+	{
+		return data;
+	}
 	for (int i = allVal.size() - 1; i >= 0; --i)
 	{
 		if (i + 1 < allVal.size() && allVal[i] <= data)
@@ -832,7 +838,7 @@ bool RedBlackTree<T>::helperOneChild(NodeT<T> *t, NodeT<T> *r, NodeT<T> *p)
 		t->data = r->data;
 		t->left = nullptr;
 		t->right = nullptr;
-		free(r);// last check -------------> just check if this is right
+		free(r);
 	} else
 	{
 		/* detach target from tree and move r up */
@@ -843,7 +849,7 @@ bool RedBlackTree<T>::helperOneChild(NodeT<T> *t, NodeT<T> *r, NodeT<T> *p)
 		{
 			p->right = r;
 		}
-		free(t);// last check -------------> just check if this is right
+		free(t);
 		r->parent = p;
 		if (r->isBlack == true && t->isBlack == true)
 		{
@@ -866,7 +872,7 @@ void statistics(string filename)
 {
 	RedBlackTree<double> rbt;
 	double sum = 0.0;
-	double median, big, small;
+	double median, big, small, avg;
 	ifstream fin(filename, ifstream::in);
 	if (fin.is_open())
 	{
@@ -882,11 +888,20 @@ void statistics(string filename)
 	vector<double> v = rbt.values();
 	small = rbt.closestLess(42.0);
 	big = rbt.closestGreater(42.0);
-	median = (v[rbt.size() / 2] + v[rbt.size() / 2 - 1]) / 2.0;
-	median = (0 == (rbt.size() % 2) ? median : v[rbt.size() / 2]);
+	if (rbt.size() == 0)
+	{
+		median = 0;
+		avg = 0;
+	}
+	else
+	{
+		median = (v[rbt.size() / 2] + v[rbt.size() / 2 - 1]) / 2.0;
+		median = (0 == (rbt.size() % 2) ? median : v[rbt.size() / 2]);
+		avg = sum / rbt.size();
+	}	
 	cout << "# of values:  " << to_string(rbt.size()) << "\n";
-	cout << "average:      " << to_string(sum / rbt.size()) << "\n";;
-	cout << "median:       " << to_string(median) << "\n";;
-	cout << "closest < 42: " << (small == 42.0 ? "None" : to_string(small)) << "\n";;
-	cout << "closest > 42: " << (small == 42.0 ? "None" : to_string(big)) << "\n";;
+	cout << "average:      " << to_string(avg) << "\n";
+	cout << "median:       " << to_string(median) << "\n";
+	cout << "closest < 42: " << (small == 42.0 ? "None" : to_string(small)) << "\n";
+	cout << "closest > 42: " << (big == 42.0 ? "None" : to_string(big)) << "\n";
 }
