@@ -13,7 +13,7 @@ public:
 	NodeT *left;
 	NodeT *right;
 	NodeT *parent;
-	bool isBlack; // true if black
+	bool isBlack;
 
 	/*
 	 * Constructor of the NodeT that takes a template type parameter
@@ -55,14 +55,10 @@ template<typename T>
 class RedBlackTree
 {
 private:
-	// NodeT<T> *root; // remember to change back to private
+	NodeT<T> *root;
 	int tree_size;
 
 public:
-
-	NodeT<T> *root; // remember this?
-
-
 
 	RedBlackTree();
 
