@@ -60,9 +60,9 @@ private:
 
 public:
 
-
-	NodeT<T> *root; // remember to change back to private
-
+	//-----------------------------------------------------
+	NodeT<T> *root; // remember this?
+    //-----------------------------------------------------
 
 
 
@@ -832,7 +832,7 @@ bool RedBlackTree<T>::helperOneChild(NodeT<T> *t, NodeT<T> *r, NodeT<T> *p)
 		t->data = r->data;
 		t->left = nullptr;
 		t->right = nullptr;
-		free(r);
+		free(r);// last check -------------> just check if this is right
 	} else
 	{
 		/* detach target from tree and move r up */
@@ -843,7 +843,7 @@ bool RedBlackTree<T>::helperOneChild(NodeT<T> *t, NodeT<T> *r, NodeT<T> *p)
 		{
 			p->right = r;
 		}
-		free(t);
+		free(t);// last check -------------> just check if this is right
 		r->parent = p;
 		if (r->isBlack == true && t->isBlack == true)
 		{

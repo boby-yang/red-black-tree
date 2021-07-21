@@ -144,7 +144,7 @@ int main()
 
 
 	// simpleTest();
-	// statistics("test.txt");
+	// statistics("test.txt"); //last check ----------------------> test some edge case
 	// testRemove();
 
 	// cout << "Left scewed 180 --> 0" << endl;
