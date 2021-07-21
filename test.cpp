@@ -136,48 +136,55 @@ void testRemove()
 
 int main()
 {
+    RedBlackTree<int> rbt;
+    rbt.insert(1);
+    levelOrderPrint(rbt);
+    rbt.remove(1);
+    levelOrderPrint(rbt);
+
+
 	// simpleTest();
 	// statistics("test.txt");
 	// testRemove();
 
 	// cout << "Left scewed 180 --> 0" << endl;
-	RedBlackTree<int> left_s_tree = testInsertLeftScewed();
+	// RedBlackTree<int> left_s_tree = testInsertLeftScewed();
 	// cout << "Right scewed 0 --> 180" << endl;
-	RedBlackTree<int> right_s_tree = testInsertRightScewed();
-	RedBlackTree<int> &rbl_ref = left_s_tree;
-	RedBlackTree<int> &rbr_ref = right_s_tree;
+	// RedBlackTree<int> right_s_tree = testInsertRightScewed();
+	// RedBlackTree<int> &rbl_ref = left_s_tree;
+	// RedBlackTree<int> &rbr_ref = right_s_tree;
 
-	cout << "Tree before remove" << endl;
-	levelOrderPrint(rbr_ref);
+	// cout << "Tree before remove" << endl;
+	// levelOrderPrint(rbr_ref);
 
-	right_s_tree.remove(180);
-	cout << "\nAfter remove 180" << endl;
-	levelOrderPrint(rbr_ref);
+	// right_s_tree.remove(180);
+	// cout << "\nAfter remove 180" << endl;
+	// levelOrderPrint(rbr_ref);
 
 
-	right_s_tree.remove(170);
-	cout << "\nAfter remove 170" << endl;
-	levelOrderPrint(rbr_ref);
+	// right_s_tree.remove(170);
+	// cout << "\nAfter remove 170" << endl;
+	// levelOrderPrint(rbr_ref);
 
-	right_s_tree.remove(70);
-	cout << "\nAfter remove 70" << endl;
-	levelOrderPrint(rbr_ref);
+	// right_s_tree.remove(70);
+	// cout << "\nAfter remove 70" << endl;
+	// levelOrderPrint(rbr_ref);
 
-	right_s_tree.remove(60);
-	cout << "\nAfter remove 60" << endl;
-	levelOrderPrint(rbr_ref);
+	// right_s_tree.remove(60);
+	// cout << "\nAfter remove 60" << endl;
+	// levelOrderPrint(rbr_ref);
 
-	right_s_tree.remove(50);
-	cout << "\nAfter remove 50" << endl;
-	levelOrderPrint(rbr_ref);
+	// right_s_tree.remove(50);
+	// cout << "\nAfter remove 50" << endl;
+	// levelOrderPrint(rbr_ref);
 
-	right_s_tree.remove(40);
-	cout << "\nAfter remove 40" << endl;
-	levelOrderPrint(rbr_ref);
+	// right_s_tree.remove(40);
+	// cout << "\nAfter remove 40" << endl;
+	// levelOrderPrint(rbr_ref);
 
-		right_s_tree.remove(30);
-	cout << "\nAfter remove 30" << endl;
-	levelOrderPrint(rbr_ref);
+	// 	right_s_tree.remove(30);
+	// cout << "\nAfter remove 30" << endl;
+	// levelOrderPrint(rbr_ref);
 	// NodeT<int> *fakeRoot = new NodeT<int>(5);
 	// NodeT<int> *fakeLeft = new NodeT<int>(3);
 	// NodeT<int> *fakeRight = new NodeT<int>(7);

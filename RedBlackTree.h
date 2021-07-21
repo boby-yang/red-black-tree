@@ -269,86 +269,6 @@ bool RedBlackTree<T>::insert(T data)
 	return true;
 }
 
-template<typename T>
-bool RedBlackTree<T>::helperNoChildren(NodeT<T> *t, NodeT<T> *p)
-{
-	NodeT<T> *s = nullptr;
-
-	/* set sibling */
-	if (p != nullptr && t == p->left)
-	{
-		s = p->right;
-	} else if (p != nullptr && t == p->right)
-	{
-		s = p->left;
-	}
-
-	/* Target is root */
-	if (t == root)
-	{
-		root = nullptr;
-	} 
-	else
-	{
-		if (t->isBlack)
-		{
-			fixDoubleBlack(t);
-		} 
-		else
-		{
-			if (s != nullptr)
-			{
-				s->isBlack = false;
-			}
-		}
-		if (t == p->left) //
-		{
-			p->left = nullptr;
-		} 
-		else
-		{
-			p->right = nullptr;
-		}
-	}
-	free(t);
-	tree_size--;
-	return true;
-}
-
-template<typename T>
-bool RedBlackTree<T>::helperOneChild(NodeT<T> *t, NodeT<T> *r, NodeT<T> *p)
-{	
-	/* target has 1 child */
-	if (t == root)
-	{
-		t->data = r->data;
-		t->left = nullptr;
-		t->right = nullptr;
-		free(r);
-	} else
-	{
-		/* detach target from tree and move r up */
-		if (t == p->left)
-		{
-			p->left = r;
-		} else
-		{
-			p->right = r;
-		}
-		free(t);
-		r->parent = p;
-		if (r->isBlack == true && t->isBlack == true)
-		{
-			fixDoubleBlack(r);
-		} else
-		{
-			r->isBlack = true;
-		}
-	}
-	tree_size--;
-	return true;
-}
-
 /* 
  * Pre: RedBlackTree obj need to be created
  * Param: template type parameter to remove
@@ -847,6 +767,101 @@ void RedBlackTree<T>::fixDoubleBlack(NodeT<T> *t)
 	}
 }
 
+/*
+ * This is the helper function that deals with the target node 
+ * being removed has no children.
+ * Param: target node and parant node
+ */
+template<typename T>
+bool RedBlackTree<T>::helperNoChildren(NodeT<T> *t, NodeT<T> *p)
+{
+	NodeT<T> *s = nullptr;
+
+	/* set sibling */
+	if (p != nullptr && t == p->left)
+	{
+		s = p->right;
+	} else if (p != nullptr && t == p->right)
+	{
+		s = p->left;
+	}
+
+	/* Target is root */
+	if (t == root)
+	{
+		root = nullptr;
+	} 
+	else
+	{
+		if (t->isBlack)
+		{
+			fixDoubleBlack(t);
+		} 
+		else
+		{
+			if (s != nullptr)
+			{
+				s->isBlack = false;
+			}
+		}
+		if (t == p->left) //
+		{
+			p->left = nullptr;
+		} 
+		else
+		{
+			p->right = nullptr;
+		}
+	}
+	free(t);
+	tree_size--;
+	return true;
+}
+
+/*
+ * This is the helper function that deals with the target node 
+ * being removed has 1 child.
+ * Param: target node, parant node and the child of target node
+ */
+template<typename T>
+bool RedBlackTree<T>::helperOneChild(NodeT<T> *t, NodeT<T> *r, NodeT<T> *p)
+{	
+	/* target has 1 child */
+	if (t == root)
+	{
+		t->data = r->data;
+		t->left = nullptr;
+		t->right = nullptr;
+		free(r);
+	} else
+	{
+		/* detach target from tree and move r up */
+		if (t == p->left)
+		{
+			p->left = r;
+		} else
+		{
+			p->right = r;
+		}
+		free(t);
+		r->parent = p;
+		if (r->isBlack == true && t->isBlack == true)
+		{
+			fixDoubleBlack(r);
+		} else
+		{
+			r->isBlack = true;
+		}
+	}
+	tree_size--;
+	return true;
+}
+
+/*
+ * Pre: a file with filename
+ * Param: a string contains the file name
+ * Pose: outputs some statistics for the given filename 
+ */
 void statistics(string filename)
 {
 	RedBlackTree<double> rbt;
