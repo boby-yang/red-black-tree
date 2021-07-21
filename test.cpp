@@ -1,6 +1,7 @@
 # include "RedBlackTree.h"
 # include <iostream>
 # include <queue>
+
 using namespace std;
 
 /* 
@@ -22,11 +23,11 @@ using namespace std;
 template<typename T>
 void levelOrderPrint(RedBlackTree<T> &tr)
 {
-	queue<NodeT<T>*> q;
+	queue < NodeT<T> * > q;
 	int next_layer_cnt, this_layer_cnt;
 
 	if (tr.size() == 0)
-		return ;
+		return;
 	q.push(tr.root);
 	this_layer_cnt = 1;
 	next_layer_cnt = 0;
@@ -39,11 +40,10 @@ void levelOrderPrint(RedBlackTree<T> &tr)
 		{
 			cout << to_string(cur->data);
 			if (cur->isBlack == true)
-			 cout << " ";
+				cout << " ";
 			else
-			 cout << "R ";
-		}
-		else
+				cout << "R ";
+		} else
 			cout << "X ";
 		this_layer_cnt--;
 		if (cur != nullptr)
@@ -61,30 +61,32 @@ void levelOrderPrint(RedBlackTree<T> &tr)
 	}
 }
 
-void testInsertLeftScewed()
+RedBlackTree<int> testInsertLeftScewed()
 {
 	RedBlackTree<int> rb1;
 	RedBlackTree<int> &rb_ref = rb1;
-	
+
 	for (int i = 180; i >= 0; i -= 10)
 	{
 		rb1.insert(i);
-		levelOrderPrint(rb_ref);
-		cout << "\n\n";
-	}	
+		// levelOrderPrint(rb_ref);
+		// cout << "\n\n";
+	}
+	return rb1;
 }
 
-void testInsertRightScewed()
+RedBlackTree<int> testInsertRightScewed()
 {
 	RedBlackTree<int> rb1;
 	RedBlackTree<int> &rb_ref = rb1;
-	
-	for (int i = 180; i >= 0; i -= 10)
+
+	for (int i = 0; i <= 180; i += 10)
 	{
 		rb1.insert(i);
-		levelOrderPrint(rb_ref);
-		cout << "\n\n";
-	}	
+		// levelOrderPrint(rb_ref);
+		// cout << "\n\n";
+	}
+	return rb1;
 }
 
 void simpleTest()
@@ -96,7 +98,7 @@ void simpleTest()
 	rb1.insert(13);
 	RedBlackTree<int> rb2(rb1);
 	cout << "Copy Tree size: " << to_string(rb2.size()) << endl;
-	
+
 	RedBlackTree<int> &rb_ref = rb2;
 	cout << "Print copied tree: " << endl;
 	levelOrderPrint(rb_ref);
@@ -113,15 +115,69 @@ void simpleTest()
 	cout << "size = " << rb1.size() << endl; //should be 2
 }
 
+void testRemove()
+{
+	RedBlackTree<int> rbt;
+	rbt.insert(1);
+	rbt.insert(2);
+	rbt.insert(3);
+	rbt.insert(4);
+	RedBlackTree<int> &rb_ref = rbt;
+
+	cout << "Tree before remove" << endl;
+	levelOrderPrint(rb_ref);
+
+	rbt.remove(2);
+	cout << "Tree after remove" << endl;
+	levelOrderPrint(rb_ref);
+	cout << "Size after remove: " << to_string(rbt.size()) << endl;
+
+}
+
 int main()
 {
 	// simpleTest();
-    // statistics("test.txt");
-    cout << "Left scewed 180 --> 0" << endl;
-	testInsertLeftScewed();
-	cout << "Right scewed 0 --> 180" << endl;
-	testInsertRightScewed();
+	// statistics("test.txt");
+	// testRemove();
 
+	// cout << "Left scewed 180 --> 0" << endl;
+	RedBlackTree<int> left_s_tree = testInsertLeftScewed();
+	// cout << "Right scewed 0 --> 180" << endl;
+	RedBlackTree<int> right_s_tree = testInsertRightScewed();
+	RedBlackTree<int> &rbl_ref = left_s_tree;
+	RedBlackTree<int> &rbr_ref = right_s_tree;
+
+	cout << "Tree before remove" << endl;
+	levelOrderPrint(rbr_ref);
+
+	right_s_tree.remove(180);
+	cout << "\nAfter remove 180" << endl;
+	levelOrderPrint(rbr_ref);
+
+
+	right_s_tree.remove(170);
+	cout << "\nAfter remove 170" << endl;
+	levelOrderPrint(rbr_ref);
+
+	right_s_tree.remove(70);
+	cout << "\nAfter remove 70" << endl;
+	levelOrderPrint(rbr_ref);
+
+	right_s_tree.remove(60);
+	cout << "\nAfter remove 60" << endl;
+	levelOrderPrint(rbr_ref);
+
+	right_s_tree.remove(50);
+	cout << "\nAfter remove 50" << endl;
+	levelOrderPrint(rbr_ref);
+
+	right_s_tree.remove(40);
+	cout << "\nAfter remove 40" << endl;
+	levelOrderPrint(rbr_ref);
+
+		right_s_tree.remove(30);
+	cout << "\nAfter remove 30" << endl;
+	levelOrderPrint(rbr_ref);
 	// NodeT<int> *fakeRoot = new NodeT<int>(5);
 	// NodeT<int> *fakeLeft = new NodeT<int>(3);
 	// NodeT<int> *fakeRight = new NodeT<int>(7);
@@ -133,13 +189,13 @@ int main()
 	// cout << "Print tree: " << endl;
 	// levelOrderPrint(rb_ref);
 
-	
+
 	// rb1.insert(80);
 	// rb1.insert(10);
 	// rb1.insert(35);
 	// rb1.insert(45);
 	// cout << "Tree size: " << to_string(rb1.size()) << endl;
-	
+
 	// RedBlackTree<int> &rb_ref = rb1;
 	// cout << "Print tree: " << endl;
 	// levelOrderPrint(rb_ref);
